@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">  
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>  
+</head>
+<body>  
+  
+  <div class="container mt-4" ng-controller="TodoController" ng-init="init()">
+    <div class="row">
+      <div class="col-md-5 offset-md-3 todoContainer" ng-cloak>
+        <!-- Add task -->
+        <div class="form-group">
+          <input type="text" ng-model="title" ng-keypress="($event.which === 13) ? add() : return " ng-blur="add()" placeholder="Add a task" class="form-control" maxlength="100">
+        </div>        
+        <!-- Task pending -->
+        <table class="table table-sm">
+          <tr ng-repeat="item in todoList | filter: { completed: false }" ng-class="{ todoTask__row: item._id == editId }">
+            <td>
+              <input type="checkbox" ng-checked="item.completed" ng-model="item.completed" ng-change="update(item)">                
+            </td>            
+            <td ng-click="showItem(item)">
+              <span ng-class="{'todoTask--completed': item.completed, 'todoTask--pending': item.completed == false}">{{ item.title }}</span> <br />
+              
+              <div class="categories">                
+                <span ng-show="item.dueDate != null && item.dueDate != '' ">
+                  <i class="far fa-calendar-alt"></i> <span class="todoTask__dueDate">{{item.dueDate}}</span>
+                </span>                
+                <span ng-repeat="cat in item.categories" class="categories__item" ng-class="getCategoryCss('{{cat}}')">
+                  {{ cat }}
+                </span>
+              </div>
+            </td>            
+            <td>
+              <i ng-click="delete(item._id)" class="far fa-trash-alt"></i>  
+            </td>
+          </tr>        
+        </table>        
+        
+        <!-- Task completed -->
+        <div ng-if="(todoList | filter: { completed: true }).length != 0">
+          <h4><strong>Completed</strong></h4>
+          <table class="table table-sm">
+            <tr ng-repeat="item in todoList | filter: { completed: true }">
+              <td>
+                <input type="checkbox" ng-checked="item.completed" ng-model="item.completed" ng-change="update(item)">  
+              </td>            
+              <td>
+                <span ng-class="{'todoTask--completed': item.completed, 'todoTask--pending': item.completed == false}">{{ item.title }}</span>             
+              </td>            
+              <td>
+                <i ng-click="delete(item._id)" class="far fa-trash-alt"></i>  
+              </td>
+            </tr>        
+          </table>  
+        </div>
+        
+      </div>
+      
+      <!-- Edit Section -->
+      <div class="col-md-3 todoContainer ml-3" ng-show="editId != ''" ng-cloak>        
+        <div class="form-group">
+          <input type="text" ng-model="editTitle" ng-keypress="($event.which === 13) ? editTodo() : return" class="form-control" maxlength="100">
+        </div>
+        <div class="form-group">          
+          <div>
+            <strong>Categories</strong>
+          </div>          
+          <div id="dvCategories">
+            <div ng-repeat="category in categories">
+              <input type="checkbox" class="chkCategories" value="{{category}}" > {{category}} 
+            </div>
+          </div>          
+        </div>
+        <div class="form-group">
+          <div>
+            <strong>Due Date</strong>
+            <br />
+            <input type="radio" name="editDueDate" ng-model="dueDate" value="none"> None
+            <br />
+            <input type="radio" name="editDueDate" ng-model="dueDate" value="today"> Today 
+            <br />
+            <input type="radio" name="editDueDate" ng-model="dueDate" value="tomorrow"> Tomorrow 
+            <br />
+            <input type="radio" name="editDueDate" ng-model="dueDate" value="dat"> Day after tomorrow 
+            <br />
+            <input type="radio" name="editDueDate" ng-model="dueDate" value="other"> Other 
+            <br />
+          </div>
+          <input ng-show="dueDate == 'other'" type="date" class="" ng-model="otherDate" 
+                 min="1997-01-01" max="2030-12-31" ng-required="dueDate == 'other'" />         
+        </div>
+        <div class="form-group">
+          <button class="btn btn-success" ng-disabled="dueDate == 'other' && otherDate === undefined" ng-click="editTodo()">Actualizar</button>
+        </div>            
+      </div>      
+      
+    </div>  
+  </div>  
+  
+  <script src="js/app.js"></script>
+  <script src="js/todoController.js"></script>
+  <script src="js/todoService.js"></script>  
+</body>
+</html>

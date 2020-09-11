@@ -1,0 +1,37 @@
+body {
+  background: blue;
+}
+
+.todoContainer {
+  border-radius: 8px;
+  background: white;
+  padding-top: 18px;
+}
+
+.todoTask--pending {
+  color: black;
+}
+
+.todoTask--completed {
+  color: gray;
+  text-decoration: line-through;
+}
+
+.categories__item {
+  background: red;
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  margin: 0 5px;
+  padding: 0 10px;
+}
+
+.todoTask__dueDate {
+  font-size: 12px;
+}
+
+.todoTask__row {
+  background: #e8e8e8;
+}
+
+/*# sourceMappingURL=styles.css.map */
